@@ -1,6 +1,5 @@
 site_name: liander-open-data
 site_description: Lightweight SQLite database and Python API for Liander's open SBI load profiles.
-site_url: https://lingkang95.github.io/Liander_open_data/
 repo_url: https://github.com/lingkang95/Liander_open_data
 repo_name: lingkang95/Liander_open_data
 edit_uri: edit/master/docs/

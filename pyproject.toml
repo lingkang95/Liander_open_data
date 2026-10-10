@@ -42,7 +42,7 @@ liander-open-data = "liander_open_data.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/lingkang95/Liander_open_data"
-Documentation = "https://lingkang95.github.io/Liander_open_data/"
+Documentation = "https://github.com/lingkang95/Liander_open_data/tree/master/docs"
 Source = "https://github.com/lingkang95/Liander_open_data"
 Issues = "https://github.com/lingkang95/Liander_open_data/issues"
 Changelog = "https://github.com/lingkang95/Liander_open_data/blob/master/CHANGELOG.md"

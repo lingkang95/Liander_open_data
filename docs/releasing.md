@@ -17,7 +17,6 @@ tokens are stored anywhere.
    with environment `testpypi`.
 3. **GitHub.** Under *Settings → Environments*, create the environments `pypi`
    and `testpypi`. Adding required reviewers to `pypi` is recommended.
-4. **Docs.** Under *Settings → Pages*, set *Source* to *GitHub Actions*.
 
 ## Cutting a release
 
