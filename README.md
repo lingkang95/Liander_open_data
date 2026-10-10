@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/liander-open-data.svg)](https://pypi.org/project/liander-open-data/)
 [![Python](https://img.shields.io/pypi/pyversions/liander-open-data.svg)](https://pypi.org/project/liander-open-data/)
-[![CI](https://github.com/lingkang95/Liander_open_data/actions/workflows/ci.yml/badge.svg)](https://github.com/lingkang95/Liander_open_data/actions/workflows/ci.yml)
+[![License](https://img.shields.io/pypi/l/liander-open-data.svg)](https://pypi.org/project/liander-open-data/)
 
 A lightweight **SQLite database** and Python API for the
 [Liander open data](https://www.liander.nl/over-ons/open-data) **SBI load profiles**:
