@@ -8,3 +8,15 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Local data (too large for git / PyPI; see docs/installation.md)
+data/Profiles/
+*.db
+*.db.tmp
+
+# Tooling
+site/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml

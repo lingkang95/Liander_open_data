@@ -1,10 +1,88 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
 [project]
 name = "liander-open-data"
 version = "0.1.0"
-description = "Add your description here"
+description = "Lightweight SQLite database and Python API for Liander's open SBI load profiles."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
-dependencies = [
-    "matplotlib>=3.10.9",
-    "pandas>=2.3.3",
+authors = [{ name = "Lingkang", email = "l.jin@tue.nl" }]
+keywords = ["liander", "energy", "load profiles", "sbi", "electricity", "open data", "sqlite"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",
 ]
+dependencies = [
+    "numpy>=1.23",
+    "pandas>=1.5",
+]
+
+[project.optional-dependencies]
+excel = ["openpyxl>=3.1"]
+parquet = ["pyarrow>=12"]
+all = ["openpyxl>=3.1", "pyarrow>=12"]
+
+[project.scripts]
+liander-open-data = "liander_open_data.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/lingkang95/Liander_open_data"
+Documentation = "https://lingkang95.github.io/Liander_open_data/"
+Source = "https://github.com/lingkang95/Liander_open_data"
+Issues = "https://github.com/lingkang95/Liander_open_data/issues"
+Changelog = "https://github.com/lingkang95/Liander_open_data/blob/master/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+    "matplotlib>=3.10.9",
+    "openpyxl>=3.1.5",
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+]
+docs = [
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.26",
+    "pymdown-extensions<12",  # 12.x breaks mkdocstrings 1.0 highlighting
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/liander_open_data",
+    "tests",
+    "docs",
+    "mkdocs.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/liander_open_data"]
+
+[tool.pytest.ini_options]
+testpaths = ["src", "tests"]
+addopts = "--doctest-modules --import-mode=importlib"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
