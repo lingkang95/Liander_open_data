@@ -83,6 +83,8 @@ addopts = "--doctest-modules --import-mode=importlib"
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+# Code snippets in README/docs are hand-aligned for readability; only lint Python files.
+extend-exclude = ["*.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
