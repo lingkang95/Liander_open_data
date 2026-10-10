@@ -27,12 +27,15 @@ pip install "liander-open-data[excel,parquet]"
 
 ## Quick start
 
-The profile CSVs (`<SBI code>.csv`, ~1.2 GB) are not bundled. Download them
-from Liander and build the database once:
+Build the database once. The first time, this downloads the profiles from
+Liander (~390 MB zip, cached for later) and takes about 1-2 minutes:
 
 ```bash
-liander-open-data build data/Profiles -o liander_profiles.db
+liander-open-data build
 ```
+
+If you already have the `<SBI code>.csv` files, pass their folder instead:
+`liander-open-data build path/to/Profiles`.
 
 Then query it from Python:
 

@@ -38,6 +38,7 @@ nav:
   - API reference:
       - ProfileDatabase: reference/database.md
       - SBI dictionary: reference/dictionary.md
+      - Downloading data: reference/download.md
   - Development:
       - Contributing: contributing.md
       - Releasing to PyPI: releasing.md

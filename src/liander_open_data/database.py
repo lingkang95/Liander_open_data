@@ -163,21 +163,25 @@ def _sbi_row(rec: SBICode) -> tuple[Any, ...]:
 
 
 def build_database(
-    profiles_dir: str | Path,
+    profiles_dir: str | Path | None = None,
     db_path: str | Path = "liander_profiles.db",
     *,
     dictionary: str | Path | Sequence[SBICode] | None = None,
     overwrite: bool = False,
     progress: Callable[[int, int, str], None] | None = None,
+    download_progress: Callable[[int, int, str], None] | None = None,
 ) -> Path:
     """Build (or rebuild) the SQLite database from the profile CSV files.
 
     Every ``<SBI code>.csv`` file in ``profiles_dir`` becomes one profile.
+    When ``profiles_dir`` is ``None`` the profiles are first downloaded from
+    Liander (~390 MB, once) with :func:`~liander_open_data.download_profiles`.
     The database is written to a temporary file first and only moved into
     place when the build succeeds.
 
     Args:
-        profiles_dir: Directory containing the profile CSVs (e.g. ``0111.csv``).
+        profiles_dir: Directory containing the profile CSVs (e.g. ``0111.csv``),
+            or ``None`` to download them into the cache directory.
         db_path: Output path of the SQLite database.
         dictionary: SBI dictionary: a path to the Liander ``.xlsx`` workbook,
             a ``.csv`` export, a sequence of :class:`SBICode` records, or
@@ -185,16 +189,25 @@ def build_database(
         overwrite: Replace ``db_path`` if it already exists.
         progress: Optional callback ``progress(done, total, code)`` invoked
             after each profile is loaded.
+        download_progress: Optional callback ``progress(bytes_done,
+            bytes_total, name)`` for the download (``profiles_dir=None`` only).
 
     Returns:
         The path of the created database.
     """
-    profiles_dir = Path(profiles_dir)
     db_path = Path(db_path)
-    if not profiles_dir.is_dir():
-        raise FileNotFoundError(f"Profiles directory not found: {profiles_dir}")
     if db_path.exists() and not overwrite:
         raise FileExistsError(f"{db_path} exists; pass overwrite=True to replace it")
+    if profiles_dir is None:
+        from .download import download_profiles
+
+        profiles_dir = download_profiles(progress=download_progress)
+    profiles_dir = Path(profiles_dir)
+    if not profiles_dir.is_dir():
+        raise FileNotFoundError(
+            f"Profiles directory not found: {profiles_dir}. Omit the directory to "
+            "download the profiles from Liander automatically."
+        )
 
     if dictionary is None or isinstance(dictionary, (str, Path)):
         records = load_dictionary(dictionary)
@@ -320,8 +333,7 @@ class ProfileDatabase:
         self.path = Path(path)
         if not self.path.exists():
             raise FileNotFoundError(
-                f"Database not found: {self.path}. "
-                "Create it with `liander-open-data build <profiles_dir>`."
+                f"Database not found: {self.path}. Create it with `liander-open-data build`."
             )
         if readonly:
             uri = f"{self.path.resolve().as_uri()}?mode=ro"
@@ -340,7 +352,7 @@ class ProfileDatabase:
     @classmethod
     def build(
         cls,
-        profiles_dir: str | Path,
+        profiles_dir: str | Path | None = None,
         db_path: str | Path = "liander_profiles.db",
         **kwargs: Any,
     ) -> ProfileDatabase:

@@ -2,24 +2,28 @@
 
 ## 1. Build the database
 
-Point the builder at the directory that contains the profile CSVs:
-
 ```bash
-liander-open-data build data/Profiles -o liander_profiles.db
+liander-open-data build
 ```
 
 ```text
+Using profiles from Liander (cached in C:\Users\you\AppData\Local\liander-open-data)
+[##############################] 388/388 MB sbi-profielen.zip
 [##############################] 203/203 8899
 Database written to liander_profiles.db (717 MB)
 ```
 
-On a laptop this takes under a minute. The bundled SBI dictionary is used
-by default. To use a newer workbook from Liander instead, pass it explicitly
-(requires the `excel` extra):
+The first run downloads the profiles (~390 MB) and takes 1-2 minutes. Later
+builds reuse the cached files. To use CSVs you already have, pass their
+folder: `liander-open-data build data/Profiles`.
+
+The bundled SBI dictionary is used by default. To use the latest workbook
+from Liander instead, download it and pass it explicitly (requires the
+`excel` extra):
 
 ```bash
-liander-open-data build data/Profiles -o liander_profiles.db \
-    --dictionary "data/dictionary/Overzicht met per SBI-code een aanbevolen profiel.xlsx"
+liander-open-data download --dictionary      # prints the path of the .xlsx
+liander-open-data build --overwrite --dictionary path/to/overzicht-met-per-sbi-code-een-aanbevolen-profiel.xlsx
 ```
 
 The same from Python:
@@ -27,7 +31,8 @@ The same from Python:
 ```python
 from liander_open_data import build_database
 
-build_database("data/Profiles", "liander_profiles.db", overwrite=True)
+build_database(db_path="liander_profiles.db")            # download if needed
+build_database("data/Profiles", "liander_profiles.db")   # or use local CSVs
 ```
 
 ## 2. Look up an SBI code

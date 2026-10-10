@@ -11,7 +11,8 @@ liander-open-data [--version] [-v] COMMAND ...
 
 | Command      | Purpose                                                   |
 |--------------|-----------------------------------------------------------|
-| `build`      | Build the database from the profile CSVs                  |
+| `download`   | Download the profile CSVs from Liander                    |
+| `build`      | Build the database (downloads the profiles if needed)     |
 | `info`       | Show build metadata                                       |
 | `list`       | List all stored profiles                                  |
 | `lookup`     | Show the dictionary entry of one SBI code                 |
@@ -19,13 +20,26 @@ liander-open-data [--version] [-v] COMMAND ...
 | `export`     | Export a profile to CSV or Parquet                        |
 | `dictionary` | Convert the SBI workbook (or the bundled copy) to CSV     |
 
+## `download`
+
+```bash
+liander-open-data download [-d DATA_DIR] [--force] [--dictionary] [-q]
+```
+
+- `-d, --data-dir`: where to store the data. Defaults to the cache folder
+  (see [Installation](installation.md#getting-the-profile-data)).
+- `--force`: download again even if the profiles are already present.
+- `--dictionary`: also download Liander's original `.xlsx` dictionary.
+
 ## `build`
 
 ```bash
-liander-open-data build PROFILES_DIR [-o OUTPUT] [-d DICTIONARY] [--overwrite] [-q]
+liander-open-data build [PROFILES_DIR] [-o OUTPUT] [-d DICTIONARY] [--overwrite] [-q]
 ```
 
-- `PROFILES_DIR`: directory containing `<SBI code>.csv` files.
+- `PROFILES_DIR`: directory containing `<SBI code>.csv` files. When
+  omitted, the profiles are downloaded from Liander (once) into the cache
+  folder.
 - `-o, --output`: database file to create (default `liander_profiles.db`).
 - `-d, --dictionary`: `.xlsx` workbook or `.csv` export. Defaults to the
   bundled dictionary.

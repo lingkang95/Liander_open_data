@@ -11,6 +11,7 @@ from pathlib import Path
 from . import __version__
 from .database import VALUE_COLUMNS, ProfileDatabase, ProfileNotFoundError, build_database
 from .dictionary import load_dictionary, write_dictionary_csv
+from .download import default_data_dir, download_dictionary, download_profiles
 
 DEFAULT_DB = "liander_profiles.db"
 
@@ -23,13 +24,40 @@ def _progress(done: int, total: int, code: str) -> None:
     print(f"\r[{bar}] {done}/{total} {code:<6}", end=end, file=sys.stderr, flush=True)
 
 
+def _download_progress(done: int, total: int, name: str) -> None:
+    mb = done / 1e6
+    if total:
+        width = 30
+        filled = int(width * done / total)
+        bar = "#" * filled + "-" * (width - filled)
+        msg = f"[{bar}] {mb:.0f}/{total / 1e6:.0f} MB {name}"
+    else:
+        msg = f"{mb:.0f} MB {name}"
+    end = "\n" if total and done >= total else ""
+    print(f"\r{msg}", end=end, file=sys.stderr, flush=True)
+
+
+def _cmd_download(args: argparse.Namespace) -> int:
+    progress = None if args.quiet else _download_progress
+    path = download_profiles(args.data_dir, force=args.force, progress=progress)
+    n = sum(1 for _ in path.glob("*.csv"))
+    print(f"{n} profile CSVs in {path}")
+    if args.dictionary:
+        xlsx = download_dictionary(args.data_dir, force=args.force, progress=progress)
+        print(f"Dictionary workbook: {xlsx}")
+    return 0
+
+
 def _cmd_build(args: argparse.Namespace) -> int:
+    if args.profiles_dir is None and not args.quiet:
+        print(f"Using profiles from Liander (cached in {default_data_dir()})", file=sys.stderr)
     path = build_database(
         args.profiles_dir,
         args.output,
         dictionary=args.dictionary,
         overwrite=args.overwrite,
         progress=None if args.quiet else _progress,
+        download_progress=None if args.quiet else _download_progress,
     )
     size_mb = path.stat().st_size / 1e6
     print(f"Database written to {path} ({size_mb:.0f} MB)")
@@ -102,8 +130,25 @@ def build_parser() -> argparse.ArgumentParser:
     def add_db(p: argparse.ArgumentParser) -> None:
         p.add_argument("--db", default=DEFAULT_DB, help=f"database file (default: {DEFAULT_DB})")
 
-    p = sub.add_parser("build", help="build the database from the profile CSV files")
-    p.add_argument("profiles_dir", help="directory with <SBI code>.csv files")
+    p = sub.add_parser("download", help="download the profile CSVs from Liander (~390 MB)")
+    p.add_argument(
+        "-d",
+        "--data-dir",
+        help=f"where to store the data (default: {default_data_dir()})",
+    )
+    p.add_argument("--force", action="store_true", help="download again even if present")
+    p.add_argument(
+        "--dictionary", action="store_true", help="also download the original .xlsx dictionary"
+    )
+    p.add_argument("-q", "--quiet", action="store_true", help="hide the progress bar")
+    p.set_defaults(func=_cmd_download)
+
+    p = sub.add_parser("build", help="build the database (downloads the profiles if needed)")
+    p.add_argument(
+        "profiles_dir",
+        nargs="?",
+        help="directory with <SBI code>.csv files (default: download from Liander)",
+    )
     p.add_argument(
         "-o", "--output", default=DEFAULT_DB, help=f"output file (default: {DEFAULT_DB})"
     )

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "liander-open-data"
-version = "0.1.0"
+version = "0.2.0"
 description = "Lightweight SQLite database and Python API for Liander's open SBI load profiles."
 readme = "README.md"
 license = "MIT"

@@ -4,7 +4,7 @@ Quick start::
 
     from liander_open_data import ProfileDatabase, build_database
 
-    build_database("data/Profiles", "liander_profiles.db")
+    build_database()  # downloads the profiles from Liander on first use
     with ProfileDatabase("liander_profiles.db") as db:
         print(db.lookup("8411"))
         df = db.get_profile("8411", columns=["mean", "p90"])
@@ -32,6 +32,11 @@ from .dictionary import (
     read_dictionary_excel,
     write_dictionary_csv,
 )
+from .download import (
+    default_data_dir,
+    download_dictionary,
+    download_profiles,
+)
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -41,6 +46,9 @@ __all__ = [
     "SBICode",
     "__version__",
     "build_database",
+    "default_data_dir",
+    "download_dictionary",
+    "download_profiles",
     "load_dictionary",
     "normalize_code",
     "read_dictionary_csv",
