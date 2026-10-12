@@ -6,7 +6,7 @@
 
 A lightweight **SQLite database** and Python API for the
 [Liander open data](https://www.liander.nl/over-ons/open-data) **SBI load profiles**:
-15-minute electricity profiles per SBI code (Dutch Standard Industrial
+15-minute electricity profiles per Large scale customers for electricity SBI code (Dutch Standard Industrial
 Classification), together with Liander's dictionary of the *recommended
 profile per SBI code*.
 
